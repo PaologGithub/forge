@@ -4,3 +4,4 @@
 //! validity of the "Forgefile"
 
 pub mod check_availability;
+pub mod check_validity;
