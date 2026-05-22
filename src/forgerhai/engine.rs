@@ -1,6 +1,6 @@
 use rhai::Engine;
 
-/// Holder for the rhai `Engine`, 
+/// Holder for the rhai `Engine`,
 ///  that changes feature from it
 ///  to represent Forgefile structure
 pub struct ForgeRhaiEngine {

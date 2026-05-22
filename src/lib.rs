@@ -5,4 +5,5 @@
 //! to make developers actually concentrate on the project and
 //! not on the building file.
 
+pub mod forgefile;
 pub mod forgerhai;
