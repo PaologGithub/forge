@@ -1,0 +1,8 @@
+[package]
+name = "forge"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rhai = { version = "1.24.0", features = ["std"] }
+serde = "1.0.228"
