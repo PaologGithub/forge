@@ -1,6 +1,6 @@
 use std::{error::Error, fs::read_to_string, path::PathBuf};
 
-use rhai::{AST, Engine};
+use rhai::{AST, Engine, Scope};
 
 /// Holder for the rhai `Engine`,
 ///  that changes feature from it
@@ -29,5 +29,25 @@ impl ForgeRhaiEngine {
         self.ast = Some(ast);
 
         Ok(()) 
+    }
+
+    pub fn has_function(&self, name: String, params: usize) -> bool {
+        let ast = self
+            .ast
+            .as_ref()
+            .expect("AST was normally some but is none.");
+
+        ast.iter_functions()
+            .any(|fn_def| fn_def.name == name && fn_def.params.len() == params)
+    }
+
+    pub fn run_main_function(&self, name: String) -> Result<i64, Box<dyn Error>> {
+        let ast = self
+            .ast
+            .as_ref()
+            .expect("AST was normally some but is none.");
+
+        let reuslt = self.engine.call_fn::<i64>(&mut Scope::new(), ast, name, ())?;
+        Ok(reuslt)
     }
 }

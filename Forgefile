@@ -1,3 +1,5 @@
-print("Hello, World");
+fn run() {
+    print("Hello, World");
 
-return 30 + 2;
+    return 0;
+}
