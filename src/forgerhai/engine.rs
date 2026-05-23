@@ -2,39 +2,42 @@ use std::{error::Error, fs::read_to_string, path::PathBuf};
 
 use rhai::{AST, Engine};
 
-use crate::forgerhai::scope::ForgeRhaiScope;
+use crate::forgerhai::{project::ForgeRhaiProject, scope::ForgeRhaiScope};
 
 /// Holder for the rhai `Engine`,
 ///  that changes feature from it
 ///  to represent Forgefile structure
 pub struct ForgeRhaiEngine {
     engine: Engine,
-
     scope: ForgeRhaiScope,
+    ast: Option<AST>,
 
-    ast: Option<AST>
+    project: ForgeRhaiProject
 }
 
 impl ForgeRhaiEngine {
     pub fn new() -> Self {
         let engine: Engine = Engine::new();
         let scope: ForgeRhaiScope = ForgeRhaiScope::new();
+        let project: ForgeRhaiProject = ForgeRhaiProject::new();
 
         Self {
             engine,
             scope,
-            ast: None
+            ast: None,
+            project
         }
     }
 
     pub fn compile_file(&mut self, path: &PathBuf) -> Result<(), Box<dyn Error>> {
         let content = read_to_string(path)?;
-
+        
         let ast = self.engine.compile(content)?;
-
         self.ast = Some(ast);
 
-        self.scope.init();
+        self.engine.build_type::<ForgeRhaiProject>();
+
+        self.scope.init(self.project.clone());
 
         Ok(()) 
     }

@@ -1,7 +1,7 @@
 fn run() {
     print("Hello, World");
 
-    print(project);
+    print(project.version);
 
     return 0;
 }

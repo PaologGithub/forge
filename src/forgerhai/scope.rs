@@ -1,10 +1,12 @@
 use rhai::Scope;
 
+use crate::forgerhai::project::ForgeRhaiProject;
+
 /// Holder for the rhai `Scope`,
 ///  that adds new values like "project"
 ///  to add ForgeRhai functions and classes
 pub struct ForgeRhaiScope {
-    scope: Scope<'static>
+    scope: Scope<'static>,
 }
 
 impl ForgeRhaiScope {
@@ -16,8 +18,8 @@ impl ForgeRhaiScope {
         }
     }
 
-    pub fn init(&mut self) {
-        self.scope.set_value("project", "asd");
+    pub fn init(&mut self, project: ForgeRhaiProject) {
+        self.scope.set_value("project", project);
     }
 
     pub fn get_scope(&mut self) -> &mut Scope<'static> {

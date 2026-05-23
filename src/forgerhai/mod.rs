@@ -6,4 +6,5 @@
 //! and not change the whole language syntax.
 
 pub mod engine;
+pub mod project;
 pub mod scope;
