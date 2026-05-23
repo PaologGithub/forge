@@ -1,6 +1,8 @@
 use std::{error::Error, fs::read_to_string, path::PathBuf};
 
-use rhai::{AST, Engine, Scope};
+use rhai::{AST, Engine};
+
+use crate::forgerhai::scope::ForgeRhaiScope;
 
 /// Holder for the rhai `Engine`,
 ///  that changes feature from it
@@ -8,15 +10,19 @@ use rhai::{AST, Engine, Scope};
 pub struct ForgeRhaiEngine {
     engine: Engine,
 
+    scope: ForgeRhaiScope,
+
     ast: Option<AST>
 }
 
 impl ForgeRhaiEngine {
     pub fn new() -> Self {
         let engine: Engine = Engine::new();
+        let scope: ForgeRhaiScope = ForgeRhaiScope::new();
 
         Self {
             engine,
+            scope,
             ast: None
         }
     }
@@ -27,6 +33,8 @@ impl ForgeRhaiEngine {
         let ast = self.engine.compile(content)?;
 
         self.ast = Some(ast);
+
+        self.scope.init();
 
         Ok(()) 
     }
@@ -41,13 +49,13 @@ impl ForgeRhaiEngine {
             .any(|fn_def| fn_def.name == name && fn_def.params.len() == params)
     }
 
-    pub fn run_main_function(&self, name: String) -> Result<i64, Box<dyn Error>> {
+    pub fn run_main_function(&mut self, name: String) -> Result<i64, Box<dyn Error>> {
         let ast = self
             .ast
             .as_ref()
             .expect("AST was normally some but is none.");
 
-        let reuslt = self.engine.call_fn::<i64>(&mut Scope::new(), ast, name, ())?;
-        Ok(reuslt)
+        let result = self.engine.call_fn::<i64>(self.scope.get_scope(), ast, name, ())?;
+        Ok(result)
     }
 }
